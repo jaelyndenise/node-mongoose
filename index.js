@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const Campsite = require('./models/campsite');
 
-//automatically connects to nucmapsite db in mongodb server
 const url = 'mongodb://localhost:27017/nucampsite';
-//connect to url using mongoose.connect which is wrapper around MongoDB Node driver connect method
-//connect method returns a promise, so you can attach a .then()
 const connect = mongoose.connect(url, {
     useCreateIndex: true,
     useNewUrlParser: true,
@@ -14,22 +11,19 @@ const connect = mongoose.connect(url, {
 connect.then(() => {
     console.log('Connected correctly to server.');
 
-    //instantiating a new document using the Campsite model
-    const newCampsite = new Campsite({
+    //Different way to instantiate a document from a model
+    //.create() defines the new document and automatically saves it (so you don't need .save() method)
+    Campsite.create({
         name: 'React Lake',
         description: 'Test'
-    });
-
-    //.save() is a mongoose method that will save the instance to the db and return a promise that will say whether the save failed or succeeded
-    //if succeeded, resolves w/ saved campsite
-    newCampsite.save()
+    })
     .then(campsite => {
         console.log(campsite);
-        return Campsite.find(); //returns array of campsite objects
+        return Campsite.find(); 
     })
     .then(campsites => {
         console.log(campsites);
-        return Campsite.deleteMany(); //deletes all documents that use the Campsite model
+        return Campsite.deleteMany(); 
     })
     .then(() => {
         return mongoose.connection.close();
@@ -39,3 +33,4 @@ connect.then(() => {
         mongoose.connection.close();
     })
 });
+
