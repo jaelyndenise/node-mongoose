@@ -1,8 +1,26 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//first argument: fields
-//second argument (optional): used to set config options
+//documents storing comments about a campsite
+const commentSchema = new Schema({
+    rating: {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
+    },
+    author: {
+        type: String,
+        required: true
+    }
+}, {
+    timestamps: true
+})
+
 const campsiteSchema = new Schema({
     name: {
         type: String,
@@ -12,15 +30,13 @@ const campsiteSchema = new Schema({
     description: {
         type: String,
         required: true
-    }
+    },
+    //comment documents from commentSchema will be nested inside of the campsiteSchema documents
+    comments: [commentSchema]
 }, {
-    //mongoose adds createdAt and updatedAt properties to each instance
     timestamps: true
 });
 
-//First argument: model name - mongoose will automatically find the lower-ase/plural version of the first parameter
-//to locate the colletion that should be used for this model
-//Second argument: schema (template) to use
 const Campsite = mongoose.model('Campsite', campsiteSchema);
 
 module.exports = Campsite;
